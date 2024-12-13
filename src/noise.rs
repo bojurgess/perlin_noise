@@ -18,46 +18,23 @@ pub mod perlin {
         }
 
         pub fn calculate_noise(&self, p: Vec2<f32>) -> f32 {
-            let offsets = [
-                Vec2::new(p.x.floor(), p.y.floor()),
-                Vec2::new(p.x.ceil(), p.y.floor()),
-                Vec2::new(p.x.floor(), p.y.ceil()),
-                Vec2::new(p.x.ceil(), p.y.ceil()),
-            ];
+            let mut offsets = Vec::new();
+            let mut dots = Vec::new();
 
-            let dv = [
-                p - offsets[0],
-                p - offsets[1],
-                p - offsets[2],
-                p - offsets[3],
-            ];
+            for &corner in &[(0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)] {
+                // always start in bottom left corner and add an offset to get the other corners
+                let offset = Vec2::new(p.x.floor() + corner.0, p.y.floor() + corner.1);
+                let dv = p - offset;
 
-            let gv = [
-                self.gradients[self.permutations[(offsets[0].x as usize
-                    + self.permutations[offsets[0].y as usize % 256])
-                    % 256]
-                    % 8],
-                self.gradients[self.permutations[(offsets[1].x as usize
-                    + self.permutations[offsets[1].y as usize % 256])
-                    % 256]
-                    % 8],
-                self.gradients[self.permutations[(offsets[2].x as usize
-                    + self.permutations[offsets[2].y as usize % 256])
-                    % 256]
-                    % 8],
-                self.gradients[self.permutations[(offsets[3].x as usize
-                    + self.permutations[offsets[3].y as usize % 256])
-                    % 256]
-                    % 8],
-            ];
+                let i = self.permutations
+                    [(offset.x as usize + self.permutations[offset.y as usize % 256]) % 256];
+                let gv = self.gradients[i % 8];
 
-            let dots = [
-                gv[0].dot(&dv[0]),
-                gv[1].dot(&dv[1]),
-                gv[2].dot(&dv[2]),
-                gv[3].dot(&dv[3]),
-            ];
+                offsets.push(offset);
+                dots.push(gv.dot(&dv));
+            }
 
+            // interpolation
             let u = fade(p.x - offsets[0].x);
             let v = fade(p.y - offsets[0].y);
 
