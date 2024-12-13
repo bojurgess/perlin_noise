@@ -7,3 +7,7 @@ edition = "2021"
 fastrand = "2.3.0"
 image = { version = "0.25.5", default-features = false, features = ["png"] }
 num-traits = "0.2.19"
+wasm-bindgen = "0.2.99"
+
+[lib]
+crate-type = ["cdylib"]
