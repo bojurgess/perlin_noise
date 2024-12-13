@@ -1,6 +1,6 @@
 [package]
 name = "perlin_noise"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Joe Burgess <bojurgess@gmail.com>"]
 description = "A Perlin noise generator"
 license = "MIT"
