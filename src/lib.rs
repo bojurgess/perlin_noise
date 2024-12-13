@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 
 mod math;
 mod noise;
+mod util;
 
 #[wasm_bindgen]
 pub struct PerlinNoise {
@@ -11,6 +12,7 @@ pub struct PerlinNoise {
 #[wasm_bindgen]
 impl PerlinNoise {
     pub fn new() -> Self {
+        util::set_panic_hook();
         Self {
             noise: noise::perlin::PerlinNoise::new(),
         }
